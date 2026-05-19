@@ -9,8 +9,9 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![OpenClaw](https://img.shields.io/badge/OpenClaw-compatible-blue)](https://openclaw.ai)
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-compatible-purple)](https://claude.ai)
+[![Codex CLI](https://img.shields.io/badge/Codex%20CLI-compatible-green)](https://github.com/openai/codex)
 [![Cursor](https://img.shields.io/badge/Cursor-compatible-orange)](https://cursor.sh)
-[![Gemini CLI](https://img.shields.io/badge/Gemini%20CLI-compatible-green)](https://ai.google.dev)
+[![Gemini CLI](https://img.shields.io/badge/Gemini%20CLI-compatible-4285F4)](https://ai.google.dev)
 
 </div>
 
@@ -188,6 +189,19 @@ Copy `self-refine-skill/` to your project. Reference `SKILL.md` in your assistan
 </details>
 
 <details>
+<summary><b>Codex CLI (OpenAI)</b></summary>
+
+```bash
+# Copy to project
+cp -r self-refine-skill/ skills/
+
+# Add to AGENTS.md or codex instructions
+echo "Read and follow skills/self-refine-skill/SKILL.md" >> AGENTS.md
+```
+
+</details>
+
+<details>
 <summary><b>ChatGPT Custom GPT</b></summary>
 
 1. Open your GPT → Settings → Instructions
@@ -213,6 +227,7 @@ Copy `SKILL.md` into your system prompt or instructions file. That's the only fi
 |----------|:------:|:----------------:|-------|
 | **OpenClaw** | ⭐⭐⭐⭐⭐ | ✅ `memory/` dir | Full support, all levels, auto-detect |
 | **Claude Code** | ⭐⭐⭐⭐⭐ | ✅ File write | Full support, reads templates + writes reflections |
+| **Codex CLI** | ⭐⭐⭐⭐⭐ | ✅ File write | Full support, OpenAI's coding agent |
 | **Cursor** | ⭐⭐⭐⭐⭐ | ✅ File write | Full support, reads `.cursorrules` context |
 | **Gemini CLI** | ⭐⭐⭐⭐½ | ✅ File write | Full support, may cap at Level 2 with limited context |
 | **Cline** | ⭐⭐⭐⭐⭐ | ✅ File write | Full support, reads local files |
