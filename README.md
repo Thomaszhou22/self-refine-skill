@@ -9,9 +9,12 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![OpenClaw](https://img.shields.io/badge/OpenClaw-compatible-blue)](https://openclaw.ai)
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-compatible-purple)](https://claude.ai)
-[![Codex CLI](https://img.shields.io/badge/Codex%20CLI-compatible-green)](https://github.com/openai/codex)
 [![Cursor](https://img.shields.io/badge/Cursor-compatible-orange)](https://cursor.sh)
+[![GitHub Copilot](https://img.shields.io/badge/Copilot-compatible-lightblue)](https://github.com/features/copilot)
+[![Codex CLI](https://img.shields.io/badge/Codex%20CLI-compatible-green)](https://github.com/openai/codex)
 [![Gemini CLI](https://img.shields.io/badge/Gemini%20CLI-compatible-4285F4)](https://ai.google.dev)
+[![Windsurf](https://img.shields.io/badge/Windsurf-compatible-00D4AA)](https://codeium.com/windsurf)
+[![JetBrains](https://img.shields.io/badge/JetBrains-compatible-000)](https://www.jetbrains.com/ai/)
 
 </div>
 
@@ -182,9 +185,13 @@ echo "Read and follow skills/self-refine-skill/SKILL.md" >> GEMINI.md
 </details>
 
 <details>
-<summary><b>Cline / AI Coding Assistants</b></summary>
+<summary><b>GitHub Copilot</b></summary>
 
-Copy `self-refine-skill/` to your project. Reference `SKILL.md` in your assistant's custom instructions.
+```bash
+# Add to your repository's Copilot instructions
+mkdir -p skills && cp -r self-refine-skill/ skills/
+echo "Read and follow skills/self-refine-skill/SKILL.md" >> .github/copilot-instructions.md
+```
 
 </details>
 
@@ -192,12 +199,62 @@ Copy `self-refine-skill/` to your project. Reference `SKILL.md` in your assistan
 <summary><b>Codex CLI (OpenAI)</b></summary>
 
 ```bash
-# Copy to project
 cp -r self-refine-skill/ skills/
-
-# Add to AGENTS.md or codex instructions
 echo "Read and follow skills/self-refine-skill/SKILL.md" >> AGENTS.md
 ```
+
+</details>
+
+<details>
+<summary><b>Windsurf</b></summary>
+
+```bash
+cp -r self-refine-skill/ skills/
+echo "Read and follow skills/self-refine-skill/SKILL.md" >> .windsurfrules
+```
+
+</details>
+
+<details>
+<summary><b>Cline / AI Coding Assistants</b></summary>
+
+Copy `self-refine-skill/` to your project. Reference `SKILL.md` in your assistant's custom instructions.
+
+</details>
+
+<details>
+<summary><b>JetBrains AI / Junie</b></summary>
+
+1. Open Settings → Tools → AI Assistant → System Instructions
+2. Add: `Read and follow skills/self-refine-skill/SKILL.md`
+3. Place the skill folder in your project root
+
+</details>
+
+<details>
+<summary><b>Zed</b></summary>
+
+1. Open Zed settings
+2. Add to your context or assistant instructions:
+```
+Read and follow skills/self-refine-skill/SKILL.md
+```
+
+</details>
+
+<details>
+<summary><b>Kiro</b></summary>
+
+1. Add skill folder to project
+2. Reference in Kiro's instruction configuration
+
+</details>
+
+<details>
+<summary><b>OpenCode</b></summary>
+
+1. Add skill folder to project
+2. Add to `AGENTS.md`: `Read and follow skills/self-refine-skill/SKILL.md`
 
 </details>
 
@@ -223,16 +280,37 @@ Copy `SKILL.md` into your system prompt or instructions file. That's the only fi
 
 ## Platform Compatibility
 
+**Top platforms (most popular by usage):**
+
 | Platform | Rating | Reflexion Memory | Notes |
 |----------|:------:|:----------------:|-------|
-| **OpenClaw** | ⭐⭐⭐⭐⭐ | ✅ `memory/` dir | Full support, all levels, auto-detect |
-| **Claude Code** | ⭐⭐⭐⭐⭐ | ✅ File write | Full support, reads templates + writes reflections |
-| **Codex CLI** | ⭐⭐⭐⭐⭐ | ✅ File write | Full support, OpenAI's coding agent |
-| **Cursor** | ⭐⭐⭐⭐⭐ | ✅ File write | Full support, reads `.cursorrules` context |
-| **Gemini CLI** | ⭐⭐⭐⭐½ | ✅ File write | Full support, may cap at Level 2 with limited context |
-| **Cline** | ⭐⭐⭐⭐⭐ | ✅ File write | Full support, reads local files |
-| **ChatGPT GPT** | ⭐⭐⭐⭐ | ⚠️ In-conversation | Inline templates auto-load, Level 0-3, no file persistence |
-| **Aider** | ⭐⭐⭐⭐ | ✅ File write | Full support via project files |
+| **Claude Code** | ⭐⭐⭐⭐⭐ | ✅ File write | #1 coding agent 2026, full support |
+| **Cursor** | ⭐⭐⭐⭐⭐ | ✅ File write | $2B ARR AI IDE, full support |
+| **GitHub Copilot** | ⭐⭐⭐⭐⭐ | ✅ File write | Largest user base, full support |
+| **Codex CLI** | ⭐⭐⭐⭐⭐ | ✅ File write | OpenAI's coding agent, full support |
+| **ChatGPT** | ⭐⭐⭐⭐ | ⚠️ In-conversation | Inline templates auto-load, all levels |
+
+<details>
+<summary><b>Show all 14 supported platforms</b></summary>
+
+| Platform | Rating | Reflexion Memory | Install |
+|----------|:------:|:----------------:|---------|
+| **OpenClaw** | ⭐⭐⭐⭐⭐ | ✅ `memory/` dir | Copy to `skills/`, auto-detect |
+| **Claude Code** | ⭐⭐⭐⭐⭐ | ✅ File write | Copy to project, add to `CLAUDE.md` |
+| **Cursor** | ⭐⭐⭐⭐⭐ | ✅ File write | Copy to project, add to `.cursorrules` |
+| **GitHub Copilot** | ⭐⭐⭐⭐⭐ | ✅ File write | Add to `.github/copilot-instructions.md` |
+| **Codex CLI** | ⭐⭐⭐⭐⭐ | ✅ File write | Add to `AGENTS.md` |
+| **Gemini CLI** | ⭐⭐⭐⭐⭐ | ✅ File write | Add to `GEMINI.md` |
+| **Windsurf** | ⭐⭐⭐⭐⭐ | ✅ File write | Add to `.windsurfrules` |
+| **Cline** | ⭐⭐⭐⭐⭐ | ✅ File write | Add to custom instructions |
+| **JetBrains AI / Junie** | ⭐⭐⭐⭐½ | ✅ File write | Add to AI Assistant instructions |
+| **Aider** | ⭐⭐⭐⭐ | ✅ File write | Place in project, reference with `--file` |
+| **Zed** | ⭐⭐⭐⭐ | ✅ File write | Add to Zed settings |
+| **ChatGPT GPT** | ⭐⭐⭐⭐ | ⚠️ In-conversation | Paste SKILL.md into GPT Instructions |
+| **Kiro** | ⭐⭐⭐⭐ | ✅ File write | Add to Kiro instructions |
+| **OpenCode** | ⭐⭐⭐⭐ | ✅ File write | Add to AGENTS.md |
+
+</details>
 
 ---
 
