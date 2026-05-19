@@ -194,7 +194,7 @@ Copy `self-refine-skill/` to your project. Reference `SKILL.md` in your assistan
 2. Paste the contents of `SKILL.md`
 3. Save
 
-**Note:** Works at Level 0-2 only (context limits adversarial review). No cross-session memory.
+**Note:** SKILL.md includes inline templates for environments without file access — all depth levels work. Reflection memory is in-conversation only (no persistence).
 
 </details>
 
@@ -211,13 +211,13 @@ Copy `SKILL.md` into your system prompt or instructions file. That's the only fi
 
 | Platform | Rating | Reflexion Memory | Notes |
 |----------|:------:|:----------------:|-------|
-| **OpenClaw** | ⭐⭐⭐⭐⭐ | ✅ `memory/` dir | Full support |
-| **Claude Code** | ⭐⭐⭐⭐ | ⚠️ In-conversation | Re-enable each session |
-| **Cursor** | ⭐⭐⭐⭐ | ❌ | No cross-session persistence |
-| **Gemini CLI** | ⭐⭐⭐½ | ❌ | Context limits large reviews |
-| **Cline** | ⭐⭐⭐⭐ | ❌ | No cross-session persistence |
-| **ChatGPT GPT** | ⭐⭐⭐ | ❌ | Level 0-2 only |
-| **Aider** | ⭐⭐½ | ❌ | Code-focused tool, general chat unnatural |
+| **OpenClaw** | ⭐⭐⭐⭐⭐ | ✅ `memory/` dir | Full support, all levels, auto-detect |
+| **Claude Code** | ⭐⭐⭐⭐⭐ | ✅ File write | Full support, reads templates + writes reflections |
+| **Cursor** | ⭐⭐⭐⭐⭐ | ✅ File write | Full support, reads `.cursorrules` context |
+| **Gemini CLI** | ⭐⭐⭐⭐½ | ✅ File write | Full support, may cap at Level 2 with limited context |
+| **Cline** | ⭐⭐⭐⭐⭐ | ✅ File write | Full support, reads local files |
+| **ChatGPT GPT** | ⭐⭐⭐⭐ | ⚠️ In-conversation | Inline templates auto-load, Level 0-3, no file persistence |
+| **Aider** | ⭐⭐⭐⭐ | ✅ File write | Full support via project files |
 
 ---
 

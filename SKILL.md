@@ -3,6 +3,49 @@
 > An AI agent skill for systematic self-reflection and iterative output refinement.
 > Based on Madaan et al. (2023), Shinn et al. (2023), and Andrew Ng's Reflection design pattern.
 
+## Platform Auto-Detection
+
+At skill load time, detect your runtime environment and adjust capabilities:
+
+| Capability | How to Check | Fallback
+|-----------|-------------|----------|
+| File system | Can you read `references/reflection-templates.md`? | Use the inline templates below instead
+| Persistent memory | Can you write to `memory/`? | Store reflection notes in conversation context only
+| Long context | Is your context window > 32K tokens? | Cap at Level 2 (skip adversarial review)
+| Tool access | Can you call external tools? | Use mental verification only
+
+**Detection rules:**
+- If you can read this file's `references/` directory → full mode (all levels + memory)
+- If you can read files but not write → full levels, in-conversation memory only
+- If you cannot read files at all → use inline templates (copied below), cap at Level 2
+- If context is limited (< 8K usable) → default to Level 1, max Level 2
+
+This means **every platform gets the best possible experience automatically** — no manual configuration needed.
+
+## Inline Reflection Templates (for environments without file access)
+
+If you cannot read `references/reflection-templates.md`, use these directly:
+
+### Level 1 Internal Prompt
+```
+Review drafted response: (1) Did I answer everything? (2) Logic gaps? (3) Can I cut 20%? (4) User can act on this? Fix → Deliver.
+```
+
+### Level 2 Internal Prompt
+```
+For each dimension (Logic / Facts / Completeness / Conciseness / Actionability / Consistency):
+  - Quote exact sentences with issues
+  - Rate: Critical / Minor / Pass
+Fix ALL Critical. Fix Minor if straightforward. Re-read once. Deliver.
+```
+
+### Level 3 Internal Prompt
+```
+Round 1: Level 2 review.
+Round 2: "If a domain expert attacked this, what would they target?" Fix valid attacks.
+Round 3: Did fixes introduce new issues? If stable → deliver. If not → fix and deliver.
+```
+
 ## When to Activate
 
 Activate when you are about to deliver a final response to the user, **after** you've gathered all information and formed your answer. Reflection happens *before* delivery, not instead of work.
