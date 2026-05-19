@@ -1,180 +1,259 @@
-# Self-Refine Reflection Skill
+<div align="center">
 
-> **The single highest-leverage technique for improving AI output quality — now an installable skill.**
+# 🪞 Self-Refine Skill
 
-An AgentSkill that implements systematic self-reflection and iterative refinement for AI agents, grounded in peer-reviewed research.
+**Systematic self-reflection for AI agents.**
 
-## Why Self-Refine?
+*Make every AI response better — before the user sees it.*
 
-Andrew Ng identified **Reflection** as the first of four key agentic design patterns. The research is clear: LLMs produce significantly better output when they critique and refine their own work iteratively.
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![OpenClaw](https://img.shields.io/badge/OpenClaw-compatible-blue)](https://openclaw.ai)
+[![Claude Code](https://img.shields.io/badge/Claude%20Code-compatible-purple)](https://claude.ai)
+[![Cursor](https://img.shields.io/badge/Cursor-compatible-orange)](https://cursor.sh)
+[![Gemini CLI](https://img.shields.io/badge/Gemini%20CLI-compatible-green)](https://ai.google.dev)
 
-- **Madaan et al. (2023)** showed ~20% absolute improvement across 7 tasks with Self-Refine
-- **Shinn et al. (2023)** demonstrated that persistent self-reflection memory (Reflexion) enables learning across episodes
-- The key insight: *the same model that generates can also critique and improve* — no extra training needed
-
-This isn't about removing fluff (any prompt can do that). It's about building a **systematic, multi-dimensional self-review process** that catches logical gaps, factual errors, inconsistencies, and missing information before the user ever sees them.
+</div>
 
 ---
 
-## Before & After Examples
+## What It Does
 
-### Example 1: Code Debugging
+Most AI responses are first drafts. This skill adds an **invisible self-review step** before every response:
 
-**User:** "My React app crashes on page load. Here's the error: `Cannot read properties of undefined (reading 'map')`"
+```
+GENERATE → CRITIQUE → REFINE → CHECK → DELIVER
+```
 
-**Without Self-Refine:**
-> This error typically occurs when you try to call `.map()` on an undefined value. In React, this usually happens when you're trying to render a list but the data hasn't loaded yet. You should check if the variable is defined before mapping over it. You can use optional chaining or a conditional check. Here's an example of how to fix it:
+Based on peer-reviewed research showing **~20% quality improvement** from iterative self-refinement (Madaan et al., 2023).
+
+**One file. Zero dependencies. Zero API cost.** The host AI acts as its own critic.
+
+---
+
+## Before & After
+
+<details>
+<summary><b>Example 1 — Code Debugging</b></summary>
+
+**User:** *"My React app crashes on page load. Error: `Cannot read properties of undefined (reading 'map')`"*
+
+**❌ Without Self-Refine:**
+> This error typically occurs when you try to call `.map()` on an undefined value. In React, this usually happens when you're trying to render a list but the data hasn't loaded yet. You should check if the variable is defined before mapping over it. You can use optional chaining or a conditional check. Here's an example:
 > ```jsx
 > {data && data.map(item => <div key={item.id}>{item.name}</div>)}
 > ```
 > Also, make sure your state is initialized properly...
 
-**With Self-Refine (Level 2):**
-> The crash is on a `.map()` call where the variable is `undefined`. Two fixes:
+**✅ With Self-Refine:**
+> The crash is `.map()` on `undefined`. Two fixes:
 >
-> **1. Guard the render (immediate fix):**
+> **Quick fix:**
 > ```jsx
 > {data?.map(item => <div key={item.id}>{item.name}</div>)}
 > ```
-> **2. Initialize state properly (root cause):**
+> **Root cause:**
 > ```jsx
-> const [data, setData] = useState([]);  // not useState() or useState(null)
+> const [data, setData] = useState([]);  // not useState() or null
 > ```
-> The root cause is likely `useState()` without an initial value — it returns `undefined`, and `.map()` on `undefined` throws.
+> Likely `useState()` returns `undefined` → `.map()` throws.
 
-**What changed:** Eliminated generic explanation, identified the specific root cause, gave both the fix and the root cause fix.
+</details>
 
----
+<details>
+<summary><b>Example 2 — Architecture Decision</b></summary>
 
-### Example 2: Architecture Advice
+**User:** *"Redis or PostgreSQL for session storage?"*
 
-**User:** "Should I use Redis or PostgreSQL for session storage in my Node.js app?"
+**❌ Without Self-Refine:**
+> Both are great options and the choice depends on your needs. Redis is fast and in-memory. PostgreSQL is durable but slower. Redis is generally preferred for sessions. But if you already have PostgreSQL, it works fine too. Consider speed, persistence, and complexity.
 
-**Without Self-Refine:**
-> Both Redis and PostgreSQL are great options for session storage, and the choice depends on your specific needs. Redis is an in-memory data store that's very fast, making it ideal for session data. PostgreSQL is a relational database that's more durable but slower for frequent reads/writes. Redis is generally the preferred choice for session storage because of its speed and built-in TTL support. However, if you already have PostgreSQL and don't want to add another dependency, it can work fine too. You should consider your requirements for speed, persistence, and infrastructure complexity.
-
-**With Self-Refine (Level 2):**
-> **Redis** for sessions. Here's why:
+**✅ With Self-Refine:**
+> **Redis.** Here's why:
 >
-> | Factor | Redis | PostgreSQL |
-> |--------|-------|-----------|
+> | | Redis | PostgreSQL |
+> |---|---|---|
 > | Latency | ~0.1ms | ~2-5ms |
-> | TTL expiry | Built-in (`EXPIRE`) | Manual cleanup job |
-> | Session scale | Millions, no schema cost | Row bloat, VACUUM overhead |
+> | TTL | Built-in | Manual cleanup |
+> | Scale | Millions, no schema cost | Row bloat, VACUUM |
 >
-> **When to use PostgreSQL instead:**
-> - < 100 concurrent users and you don't want to manage Redis
-> - Sessions need complex queries (unlikely)
+> Use PostgreSQL only if <100 users and you don't want Redis.
 >
-> **Implementation:**
 > ```bash
 > npm install connect-redis express-session
 > ```
-> ```js
-> const session = require('express-session');
-> const RedisStore = require('connect-redis').default;
-> const { createClient } = require('redis');
->
-> app.use(session({
->   store: new RedisStore({ client: createClient() }),
->   secret: process.env.SESSION_SECRET,
->   resave: false,
->   saveUninitialized: false,
-> }));
-> ```
 
-**What changed:** Replaced vague pros/cons with a decision table, specific numbers, and copy-paste implementation. User can act immediately.
+</details>
 
----
+<details>
+<summary><b>Example 3 — Concise Explanation</b></summary>
 
-### Example 3: Technical Explanation
+**User:** *"Explain JWT in 3 sentences."*
 
-**User:** "Explain JWT authentication in 3 sentences."
+**❌ Without Self-Refine:**
+> JWT (JSON Web Token) is a popular method for handling authentication in web applications. It works by creating a signed token that contains user information and is sent with each request. The server can verify the token without needing to store session data, making it stateless and scalable. JWTs consist of three parts: a header, a payload, and a signature, all encoded in Base64...
 
-**Without Self-Refine:**
-> JWT (JSON Web Token) is a popular method for handling authentication in web applications. It works by creating a signed token that contains user information and is sent with each request. The server can verify the token without needing to store session data, making it stateless and scalable. JWTs consist of three parts: a header, a payload, and a signature, all encoded in Base64. When a user logs in, the server generates a JWT and sends it to the client, which then includes it in the Authorization header of subsequent requests.
+**✅ With Self-Refine:**
+> JWT is a signed JSON token (`header.payload.signature`) proving identity. After login, the server issues one; the client sends it in `Authorization: Bearer <token>` on every request. The server verifies the signature — no session storage needed.
 
-**With Self-Refine (Level 1):**
-> JWT is a signed JSON token (`header.payload.signature`) that proves identity. After login, the server issues a JWT; the client sends it in `Authorization: Bearer <token>` on every request. The server verifies the signature — no session storage needed.
-
-**What changed:** Hit the 3-sentence constraint, removed filler, kept all essential information.
+</details>
 
 ---
 
 ## How It Works
 
-The skill activates **before delivering a final response** and runs a structured self-review:
+### 6 Reflection Dimensions
 
-1. **Generate** your initial response
-2. **Critique** it across 6 dimensions (logic, facts, completeness, conciseness, actionability, consistency)
-3. **Refine** based on the critique
-4. **Check** — if issues remain and budget allows, loop
+| # | Dimension | Catches |
+|---|-----------|---------|
+| 1 | **Logical Completeness** | Broken reasoning chains |
+| 2 | **Factual Accuracy** | Unverified claims |
+| 3 | **Response Completeness** | Ignored sub-questions |
+| 4 | **Conciseness** | Redundancy, filler |
+| 5 | **Actionability** | Vague advice without steps |
+| 6 | **Internal Consistency** | Self-contradictions |
 
-### Four Depth Levels (Auto-Selected)
+### 4 Depth Levels (Auto-Selected)
 
-| Level | When | Rounds | Overhead |
-|-------|------|--------|----------|
-| **Level 0** | Simple Q&A, greetings | 0 | 0% |
-| **Level 1** | Most conversations | 1 | ~15% |
-| **Level 2** | Complex technical | 2 | ~30% |
-| **Level 3** | High-stakes / adversarial | 3 | ~50% |
+| Level | When | Rounds | Token Cost |
+|:-----:|------|:------:|:----------:|
+| **0** | Simple Q&A | 0 | +0% |
+| **1** | Most conversations | 1 | ~15% |
+| **2** | Complex technical | 2 | ~30% |
+| **3** | High-stakes / adversarial | 3 | ~50% |
 
-No configuration needed — the agent auto-selects depth based on task complexity.
+No configuration. The agent picks the right depth automatically based on task complexity.
 
-### Cross-Session Learning
+### Cross-Session Learning (Reflexion)
 
-Borrowing from Reflexion (Shinn et al. 2023), patterns discovered during self-review are persisted to memory, creating a growing corpus of self-corrections that improve future responses.
-
----
-
-## 🖥️ Platform Compatibility
-
-| Platform | Rating | How to Install | Notes |
-|----------|--------|---------------|-------|
-| **OpenClaw** | ⭐⭐⭐⭐⭐ | Place in `skills/self-refine-skill/` | Full support. Auto-detects. Reflexion memory works with `memory/` directory. |
-| **Claude Code** | ⭐⭐⭐⭐ | Copy to project. Add to `CLAUDE.md`: `Read and follow skills/self-refine-skill/SKILL.md` | Full support. Reflexion memory via in-conversation notes. |
-| **Cursor** | ⭐⭐⭐⭐ | Copy to project root. Add to `.cursorrules`: `Read and follow skills/self-refine-skill/SKILL.md` | Full support. No cross-session persistence. |
-| **Gemini CLI** | ⭐⭐⭐½ | Copy to project, reference in system instructions | SKILL.md fits within context. Reflexion memory limited. |
-| **Cline** | ⭐⭐⭐⭐ | Copy to project, reference in custom instructions | Full support. No cross-session persistence. |
-| **ChatGPT GPT** | ⭐⭐⭐ | Paste SKILL.md into Custom GPT Instructions | Works but no file references. Level 0-2 only (context limits adversarial review). |
-| **Aider** | ⭐⭐½ | Place in project, reference with `--file` | Works but Aider is code-focused; general chat responses feel unnatural. |
+When the agent discovers a recurring error pattern during self-review, it saves a note to memory. Next session, it avoids the same mistake. Based on Shinn et al. (2023).
 
 ---
 
 ## Installation
 
-### OpenClaw (Recommended)
+<details>
+<summary><b>OpenClaw (recommended)</b></summary>
+
 ```bash
+# Copy to your skills directory
 cp -r self-refine-skill/ ~/.openclaw/skills/
 ```
 
-### Any AI Coding Tool
-1. Copy `self-refine-skill/` into your project
-2. Add to your system instructions: `Read and follow skills/self-refine-skill/SKILL.md`
-3. Done — the AI will self-refine on every response
+That's it. OpenClaw auto-detects skills.
 
-### ChatGPT Custom GPT
-1. Open your GPT settings → Instructions
+</details>
+
+<details>
+<summary><b>Claude Code</b></summary>
+
+```bash
+# Copy to your project
+cp -r self-refine-skill/ skills/
+
+# Add to CLAUDE.md
+echo "Read and follow skills/self-refine-skill/SKILL.md" >> CLAUDE.md
+```
+
+</details>
+
+<details>
+<summary><b>Cursor</b></summary>
+
+```bash
+# Copy to project root
+cp -r self-refine-skill/ skills/
+
+# Add to .cursorrules
+echo "Read and follow skills/self-refine-skill/SKILL.md" >> .cursorrules
+```
+
+</details>
+
+<details>
+<summary><b>Gemini CLI</b></summary>
+
+```bash
+# Copy to project, add to GEMINI.md
+cp -r self-refine-skill/ skills/
+echo "Read and follow skills/self-refine-skill/SKILL.md" >> GEMINI.md
+```
+
+</details>
+
+<details>
+<summary><b>Cline / AI Coding Assistants</b></summary>
+
+Copy `self-refine-skill/` to your project. Reference `SKILL.md` in your assistant's custom instructions.
+
+</details>
+
+<details>
+<summary><b>ChatGPT Custom GPT</b></summary>
+
+1. Open your GPT → Settings → Instructions
 2. Paste the contents of `SKILL.md`
 3. Save
+
+**Note:** Works at Level 0-2 only (context limits adversarial review). No cross-session memory.
+
+</details>
+
+<details>
+<summary><b>Any AI Tool</b></summary>
+
+Copy `SKILL.md` into your system prompt or instructions file. That's the only file you need.
+
+</details>
+
+---
+
+## Platform Compatibility
+
+| Platform | Rating | Reflexion Memory | Notes |
+|----------|:------:|:----------------:|-------|
+| **OpenClaw** | ⭐⭐⭐⭐⭐ | ✅ `memory/` dir | Full support |
+| **Claude Code** | ⭐⭐⭐⭐ | ⚠️ In-conversation | Re-enable each session |
+| **Cursor** | ⭐⭐⭐⭐ | ❌ | No cross-session persistence |
+| **Gemini CLI** | ⭐⭐⭐½ | ❌ | Context limits large reviews |
+| **Cline** | ⭐⭐⭐⭐ | ❌ | No cross-session persistence |
+| **ChatGPT GPT** | ⭐⭐⭐ | ❌ | Level 0-2 only |
+| **Aider** | ⭐⭐½ | ❌ | Code-focused tool, general chat unnatural |
 
 ---
 
 ## Academic Foundations
 
-| Paper | Year | Key Contribution |
-|-------|------|-----------------|
-| Madaan et al., "Self-Refine" | 2023 | Core GENERATE→CRITIQUE→REFINE loop |
-| Shinn et al., "Reflexion" | 2023 | Persistent verbal self-reflection memory |
-| Dhuliawala et al., "Chain-of-Verification" | 2023 | Verification questions for factual claims |
-| Kadavath et al., "Self-Calibration" | 2022 | Confidence assessment of own outputs |
-| Gou et al., "CRITIC" | 2023 | Tool-interactive self-correction |
-| Ng, "Agentic Design Patterns" | 2024 | Reflection as foundational agent pattern |
+| Paper | Year | What We Use |
+|-------|:----:|-------------|
+| **Self-Refine** — Madaan et al. | 2023 | Core GENERATE→CRITIQUE→REFINE loop |
+| **Reflexion** — Shinn et al. | 2023 | Persistent self-reflection memory |
+| **Chain-of-Verification** — Dhuliawala et al. | 2023 | Verification questions for facts |
+| **Self-Calibration** — Kadavath et al. | 2022 | Confidence assessment |
+| **CRITIC** — Gou et al. | 2023 | Tool-interactive self-correction |
+| **Agentic Design Patterns** — Andrew Ng | 2024 | Reflection as foundational pattern |
 
-Full source list with URLs: [`references/sources.md`](references/sources.md)
+Full bibliography: [`references/sources.md`](references/sources.md)
 
 ---
 
-## License
+## File Structure
 
-MIT
+```
+self-refine-skill/
+├── SKILL.md                          # Core instructions (the only required file)
+├── README.md                         # This file
+├── LICENSE                           # MIT
+└── references/
+    ├── sources.md                    # Academic sources with URLs
+    └── reflection-templates.md       # Ready-to-use internal prompts per depth level
+```
+
+---
+
+<div align="center">
+
+**Good answers are like good code: no unnecessary lines, every line serves a purpose.**
+
+⭐ Star this repo if it improved your AI's output quality.
+
+</div>
