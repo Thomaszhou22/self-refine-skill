@@ -1,0 +1,12 @@
+{
+  "name": "self-refine-reflection",
+  "description": "Systematic self-reflection and iterative refinement for AI agents. GENERATE → CRITIQUE → REFINE → CHECK. Based on peer-reviewed research. Zero API cost.",
+  "version": "2.0.0",
+  "author": {
+    "name": "Thomas Zhou"
+  },
+  "homepage": "https://github.com/Thomaszhou22/self-refine-skill",
+  "repository": "https://github.com/Thomaszhou22/self-refine-skill",
+  "license": "MIT",
+  "skills": "."
+}
