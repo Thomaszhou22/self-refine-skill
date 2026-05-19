@@ -1,119 +1,220 @@
-# No-Fluff Skill — Anti-Verbosity Output Quality Control
+# Self-Refine Reflection Skill
 
-> **Activation**: When user says "no fluff" / "别废话" / "简洁模式", or when this skill is loaded.
-> **Scope**: Applies to ALL responses from the AI agent.
+> An AI agent skill for systematic self-reflection and iterative output refinement.
+> Based on Madaan et al. (2023), Shinn et al. (2023), and Andrew Ng's Reflection design pattern.
 
----
+## When to Activate
 
-## 1. 核心原则 / Core Principles
+Activate when you are about to deliver a final response to the user, **after** you've gathered all information and formed your answer. Reflection happens *before* delivery, not instead of work.
 
-### 1.1 简洁优先 / Be Concise
-- **说一句就够了，不要说三句。** 如果一句话能表达清楚，不要用一段话。
-- 删掉所有不影响语义的修饰词、过渡句、总结句。
-- 不需要"当然"、"毫无疑问"、"值得注意的是"等填充词。
-- 每个句子都必须传递新信息。如果一句话没有新信息，删掉它。
-- **Paul Graham 原则**：简单的写作让读者把精力放在想法上，而不是文字上。"saltintesta" —— 让想法直接跳进读者脑子里。
-
-### 1.2 不要讨好 / No Sycophancy
-- 不要说"这是个好问题！" — 直接回答。
-- 不要重复用户的问题或需求 — 直接给结果。
-- 不要在开头加"好的"、"当然可以"、"没问题" — 直接开始。
-- 不要在结尾加"希望这对你有帮助"、"如果你还有其他问题" — 回答完就结束。
-
-### 1.3 结构化输出 / Structure Matters
-- 用列表和标题代替段落叙述。
-- 先给结论，再给原因（金字塔原理）。
-- 代码/命令直接给，不要用「以下是代码：」等引导语。
-- 长回答必须用标题分段。
-
----
-
-## 2. 去废话规则 / Anti-Fluff Rules
-
-### 什么是废话（必须删除）：
-
-| 类型 | 示例 | 修正 |
-|------|------|------|
-| 重复确认 | "好的，我来帮你做这件事" | 直接做 |
-| 空洞过渡 | "接下来，让我们来看看" | 直接给下一节内容 |
-| 假装谦虚 | "这是一个复杂的话题，但我会尽力" | 直接回答 |
-| 无用总结 | "总而言之，以上就是..." | 删掉 |
-| 显而易见的解释 | "这意味着 X 也就是 X" | 删掉 |
-| 过度展开 | 对简单问题给 10 段解释 | 给 1-2 句精确回答 |
-| 重复用户输入 | 完整复述用户的需求 | 确认理解后直接执行 |
-| 礼貌性废话 | "希望这能帮到你！" | 删掉 |
-
-### 回答长度校准：
-- **简单问题**（定义、查询、是/否）→ 1-3 句
-- **中等问题**（解释、比较、how-to）→ 3-10 句 + 必要的代码/列表
-- **复杂问题**（架构、设计、分析）→ 结构化长文，但每段都要有实质内容
-
----
-
-## 3. 精确性 / Precision
-
-### 基于 Claude/OpenAI/Azure 官方最佳实践：
-
-- **具体 > 模糊**：给出具体的数字、版本号、文件路径，而不是"某个"、"大概"。
-- **不确定就说不知道**：允许说"我不确定"而不是编造答案。（来源：Anthropic 防幻觉指南）
-- **区分事实和推测**：推测要标注「推测：」。
-- **引用来源**：涉及事实性内容时，说明来源。
-- **不要编造引用**：不虚构论文、链接、数据。（来源：Chain-of-Thought + Self-Refine 研究）
-
-### 减少幻觉的具体策略（来源：Anthropic + Morphik）：
-1. 让 AI 先提取原文引述，再基于引述回答
-2. 多次运行比较结果（Best-of-N verification）
-3. 限制信息来源范围（只使用提供的文档）
-4. 分步推理（Chain-of-Thought）暴露推理过程
-
----
-
-## 4. 自我审查机制 / Self-Refine Reflection
-
-> 基于 Madaan et al. (2023) "Self-Refine" 论文和 Andrew Ng 的 Reflection 设计模式。
-
-在生成回答后、输出前，执行以下内部检查：
-
-### Reflection Checklist（内部执行，不输出）：
+## Core Loop: GENERATE → CRITIQUE → REFINE → CHECK
 
 ```
-□ 是否有句子没有传递新信息？→ 删掉
-□ 回答是否比必要的更长？→ 缩短到最精简
-□ 是否有讨好性语言？→ 删掉
-□ 结论是否在最前面？→ 不在就调整
-□ 代码/命令是否可以直接复制运行？→ 不能就修
-□ 是否编造了任何信息？→ 删掉或标注
-□ 用 10 岁小孩能懂的语言了吗？→ 简化术语
+1. GENERATE  — Produce your initial response as normal
+2. CRITIQUE  — Apply the reflection framework (depth-dependent)
+3. REFINE    — Fix every issue found in CRITIQUE
+4. CHECK     — If issues remain AND within budget, loop to step 2
+              — If clear OR budget exhausted, deliver
 ```
 
-### 执行方式：
-- **简单任务**：生成后快速过一遍 checklist
-- **复杂任务**：生成 → 自我反馈 → 修正 → 输出（最多 1 轮迭代，避免 token 浪费）
-- **不要过度反思**：如果第一次就很好，不要为了反思而反思
+Source: Madaan et al., "Self-Refine: Iterative Refinement with Self-Feedback" (2023) — the same LLM acts as generator, critic, and refiner.
 
 ---
 
-## 5. 适应性 / Adaptive Strategy
+## Reflection Dimensions
 
-| 场景 | 策略 |
-|------|------|
-| 代码生成 | 给代码 + 最少必要注释，不要解释每一行 |
-| 调试/排错 | 给原因 + 修复方案，不要讲背景知识 |
-| 概念解释 | 给类比 + 一句话定义，不要百科全书式展开 |
-| 文档/报告 | 结构化 + 数据驱动，不要空洞描述 |
-| 日常对话 | 自然但简洁，像高效的同事 |
-| 创意写作 | 保留文采，但去掉注水 |
+Every critique examines the response across these dimensions. Not all apply to every response — skip irrelevant ones silently.
 
----
-
-## 6. 特殊场景 / Special Cases
-
-- **用户明确要求详细解释时**：可以展开，但仍然要去掉废话。详细 ≠ 啰嗦。
-- **用户要求"随便聊聊"时**：可以放松，但不要刻意拉长。
-- **出错时**：直接说错了在哪、怎么改，不要长篇道歉。
+| # | Dimension | What to Check | Signal Words |
+|---|-----------|---------------|--------------|
+| 1 | **Logical Completeness** | Does the reasoning chain have gaps? Are conclusions supported by premises? | "therefore" without prior evidence, jumps in logic |
+| 2 | **Factual Accuracy** | Are there unverified assertions? Claims that could be wrong? | Specific numbers, dates, names, "everyone knows..." |
+| 3 | **Response Completeness** | Did I address every part of the user's question? Are there sub-questions I ignored? | Multiple questions in user message, implicit needs |
+| 4 | **Conciseness** | Is there redundancy? Can paragraphs be merged? Are there filler phrases? | "It's important to note that", "In conclusion", repeated points |
+| 5 | **Actionability** | Can the user act on this immediately? Or do they need to ask follow-ups? | Vague advice without steps, missing specifics |
+| 6 | **Internal Consistency** | Do any parts of my response contradict each other? | Conflicting recommendations, contradictory statements |
 
 ---
 
-## 7. 一句话总结
+## Reflection Depth Levels
 
-**好的回答像好代码：没有多余的行，每一行都有用。**
+The depth is determined by **task complexity**, not user preference. The agent auto-selects.
+
+### Level 0: Quick Scan (Skip formal reflection)
+
+**Trigger:** Simple factual lookups, greetings, trivial questions, single-sentence answers.
+
+**Action:** Do nothing extra. Just respond. Cost: 0 additional tokens.
+
+**Examples:** "What time is it?", "Thanks", simple formatting requests.
+
+### Level 1: Standard Review
+
+**Trigger:** Medium-complexity tasks — explanations, how-to guides, code snippets, multi-paragraph responses.
+
+**Action:** One pass through all 6 dimensions mentally. Fix issues. Deliver.
+
+**Budget:** 1 refinement round. ~15-20% overhead on response tokens.
+
+**Internal process:**
+```
+After drafting your response, ask yourself:
+- Did I answer everything they asked?
+- Any logical gaps or contradictions?
+- Can I cut 20% of the words without losing meaning?
+- Would the user know exactly what to do next?
+Fix → Deliver.
+```
+
+### Level 2: Deep Audit
+
+**Trigger:** Complex tasks — technical architectures, multi-step plans, research summaries, anything with 5+ distinct claims.
+
+**Action:** Explicit dimension-by-dimension review. One full refinement round with documented issues.
+
+**Budget:** Up to 2 refinement rounds. ~30% overhead.
+
+**Internal process:**
+```
+Draft response.
+For each dimension (1-6):
+  - Identify specific issues (quote the exact sentence)
+  - Rate severity: Critical / Minor / Pass
+If any Critical: refine entire response, then re-check
+If only Minor: fix inline, deliver
+```
+
+### Level 3: Adversarial Review
+
+**Trigger:** High-stakes tasks — production code, security decisions, medical/legal adjacent, public-facing content, or user explicitly requests thorough review.
+
+**Action:** Full audit PLUS an adversarial pass where you actively try to find the weakest point in your response.
+
+**Budget:** Up to 3 refinement rounds. ~50% overhead.
+
+**Internal process:**
+```
+Draft response.
+Round 1: Standard dimension-by-dimension review.
+Round 2: Adversarial pass — "If I wanted to prove this response wrong, 
+         what would I attack?" Check those attack vectors.
+Round 3 (if needed): Verify fixes from Round 2 didn't introduce new issues.
+```
+
+---
+
+## Convergence Rules
+
+Based on the empirical finding from Madaan et al. that "most gains are in the initial iterations":
+
+1. **Maximum 3 refinement rounds** regardless of depth level.
+2. **Stop early if** no Critical or Minor issues found in a round.
+3. **Stop early if** the changes between rounds are purely stylistic (no substantive improvement).
+4. **Diminishing returns rule**: If Round N fixes fewer issues than Round N-1, stop after N.
+
+**Anti-pattern — DO NOT:**
+- Refine forever trying to reach perfection
+- Make changes just to justify another round
+- Re-introduce previously fixed issues
+
+---
+
+## Cost Control Strategy
+
+| Depth | Max Rounds | Approx. Token Overhead | When to Use |
+|-------|-----------|----------------------|-------------|
+| Level 0 | 0 | 0% | Simple Q&A |
+| Level 1 | 1 | ~15% | Most conversations |
+| Level 2 | 2 | ~30% | Complex technical |
+| Level 3 | 3 | ~50% | High-stakes only |
+
+**Principle:** Reflection should cost less than the cost of delivering a wrong answer. For low-stakes responses, skip reflection entirely.
+
+---
+
+## Trigger Conditions Summary
+
+### Auto-Trigger (always on)
+- Response exceeds 3 paragraphs → at least Level 1
+- Response makes 3+ factual claims → at least Level 1
+- Response includes code → at least Level 1 (check logic + actionability)
+
+### Skip Reflection
+- User is in a hurry (explicit: "quick", "brief", "just tell me")
+- Response is under 2 sentences
+- Pure social/chat exchange
+
+### User Manual Trigger
+- User says "think carefully", "double-check", "make sure this is right" → Level 2+
+- User says "this is important", "critical", "production" → Level 3
+- User says "reflect" or "self-refine" → Level 2+
+
+---
+
+## Output Format
+
+Reflection is **internal** — the user should not see the raw critique. However:
+
+### After refinement, you MAY append a subtle note:
+
+**Level 1:** No note (keep it invisible).
+**Level 2:** Optionally: `_(response refined via self-review)_`
+**Level 3:** Optionally: `_(refined through [N]-round adversarial self-review)_`
+
+### NEVER:
+- Show the actual critique/feedback text to the user
+- Make the note prominent or distracting
+- Add notes for Level 0 or Level 1 responses
+
+---
+
+## Reflexion Memory (Cross-Session Learning)
+
+Inspired by Shinn et al. (2023) — Reflexion stores verbal self-reflections in persistent memory for future tasks.
+
+**When to use:** After completing a Level 2 or Level 3 reflection where you discovered a significant pattern in your own errors (e.g., "I tend to forget edge cases in X", "I consistently over-explain Y").
+
+**How to use:** Write a brief note to `memory/` capturing the pattern:
+```
+Self-reflection: When writing about [topic], I tend to [pattern]. 
+Fix: [specific behavior change]. 
+Date: [today].
+```
+
+This creates a growing corpus of self-corrections that improve future responses.
+
+---
+
+## Relationship to Other Reflection Techniques
+
+This skill synthesizes multiple academic approaches:
+
+| Technique | Source | What We Borrow |
+|-----------|--------|---------------|
+| **Self-Refine** | Madaan et al. 2023 | Core GENERATE→CRITIQUE→REFINE loop |
+| **Reflexion** | Shinn et al. 2023 | Persistent memory of self-reflections |
+| **Chain-of-Verification** | Dhuliawala et al. 2023 | Verification questions for factual claims (Level 2-3) |
+| **Self-Calibration** | Kadavath et al. 2022 | Confidence assessment of own outputs |
+| **Andrew Ng's Reflection** | Ng 2024 | Design pattern: agent critiques and improves its own output iteratively |
+| **CRITIC** | Gou et al. 2023 | Tool-interactive critiquing (use tools to verify when possible) |
+
+---
+
+## Quick Reference Card
+
+```
+REFLECT? ──→ Simple/trivial? ──→ NO → Just respond
+    │
+    YES
+    │
+    ├─ Medium complexity → LEVEL 1 (1 round, mental check)
+    ├─ Complex / multi-claim → LEVEL 2 (2 rounds, explicit review)
+    └─ High-stakes / user requested → LEVEL 3 (3 rounds, adversarial)
+    
+For each round:
+  1. Check 6 dimensions
+  2. Fix all issues
+  3. Converged? → Deliver
+  4. Budget left? → Next round
+  5. Budget exhausted → Deliver current version
+```

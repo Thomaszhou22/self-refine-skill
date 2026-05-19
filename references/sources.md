@@ -1,102 +1,70 @@
-# No-Fluff Skill — Reference Sources
+# Self-Refine Reflection — Academic Sources
 
-## Official Guides
+## Core Papers
 
-1. **OpenAI Prompt Engineering Guide**
-   - platform.openai.com/docs/guides/prompt-engineering
-   - Key: Use developer/system messages for high-level behavioral control; calibrate model behavior through instructions; different model types need different prompting strategies
+### Self-Refine: Iterative Refinement with Self-Feedback
+- **Authors:** Madaan, Tandon, Gupta, Hallinan, Gao, Wiegreffe, Alon, Dziri, Prabhumoye, Yang, Gupta, Majumder, Hermann, Welleck, Yazdanbakhsh, Clark
+- **Year:** 2023
+- **URL:** https://arxiv.org/abs/2303.17651
+- **Code:** https://github.com/madaan/self-refine
+- **Key finding:** ~20% absolute improvement across 7 diverse tasks. Same LLM acts as generator, critic, and refiner. Most gains in initial iterations.
+- **What we use:** Core GENERATE→CRITIQUE→REFINE loop, convergence rules, cost budgeting.
 
-2. **Anthropic Claude Prompting Best Practices**
-   - platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices
-   - Key: Claude calibrates response length to task complexity; to reduce verbosity add "Provide concise, focused responses. Skip non-essential context"; positive examples > negative instructions; more literal instruction following in newer models
+### Reflexion: Language Agents with Verbal Reinforcement Learning
+- **Authors:** Shinn, Labash, Narasimhan
+- **Year:** 2023 (NeurIPS)
+- **URL:** https://arxiv.org/abs/2303.11366
+- **Code:** https://github.com/noahshinn/reflexion
+- **Key finding:** Agents that store verbal self-reflections in persistent memory improve across episodes without parameter updates.
+- **What we use:** Cross-session reflection memory pattern.
 
-3. **Microsoft Azure OpenAI Prompt Engineering**
-   - learn.microsoft.com/en-us/azure/foundry/openai/concepts/prompt-engineering
-   - Key: Instructions are the most important prompt component; system/user/assistant roles provide structure; prompt construction is iterative
+### Chain-of-Verification Reduces Hallucination in Large Language Models
+- **Authors:** Dhuliawala, Kordi, Khashabi, Schubotz, Azer, Gurevych
+- **Year:** 2023
+- **URL:** https://arxiv.org/abs/2309.11495
+- **What we use:** Verification question pattern for factual claims in Level 2-3 reviews.
 
-4. **Google Gemini Prompting Strategies**
-   - ai.google.dev/gemini-api/docs/prompting-strategies
-   - (Redirect issues prevented full read, but general principles apply)
+### Language Models (Mostly) Know What They Know
+- **Authors:** Kadavath et al.
+- **Year:** 2022
+- **URL:** https://arxiv.org/abs/2207.05221
+- **What we use:** Self-calibration — models can assess their own confidence.
 
-## Academic Papers
+### CRITIC: Large Language Models Can Self-Correct with Tool-Interactive Critiquing
+- **Authors:** Gou et al.
+- **Year:** 2023
+- **What we use:** Tool-assisted verification (use search, code execution, etc. to verify claims).
 
-5. **Self-Refine: Iterative Refinement with Self-Feedback** (Madaan et al., 2023)
-   - arxiv.org/abs/2303.17651
-   - Key: Generate → Feedback → Refine loop; up to 4 iterations; no supervised data needed; GPT-4 improved 8.7 units on code optimization
+## Design Patterns
 
-6. **Chain-of-Thought Prompting Elicits Reasoning in LLMs** (Wei et al., 2022)
-   - arxiv.org/abs/2201.11903
-   - Key: Breaking complex tasks into step-by-step reasoning improves accuracy; intermediate reasoning steps expose logic for verification
+### Andrew Ng — Agentic Design Patterns: Reflection
+- **Year:** 2024
+- **Source:** LinkedIn / X posts, AI India keynote
+- **Key insight:** Reflection is the first and most impactful agentic design pattern. Agent critiques its own output and improves iteratively.
+- **Recommended papers by Ng:** Self-Refine (Madaan), Reflexion (Shinn), CRITIC (Gou)
 
-7. **Reflexion: Autonomous Agent with Dynamic Memory and Self-Reflection**
-   - promptengineering.org/reflexion
-   - Key: Agents emulate human self-reflection; dynamic memory enables learning from mistakes
+## Related Techniques
 
-8. **Self-Consistency Improves Chain of Thought Reasoning** (Wang et al., 2022)
-   - Key: Running multiple CoT paths and taking majority vote improves reliability
+### Self-Consistency: Improves Chain of Thought Reasoning
+- **Authors:** Wang et al.
+- **Year:** 2022
+- **URL:** https://arxiv.org/abs/2203.11171
 
-## Expert Insights
+### Tree of Thoughts: Deliberate Problem Solving
+- **Authors:** Yao et al.
+- **Year:** 2023
+- **URL:** https://arxiv.org/abs/2305.10601
 
-9. **Andrew Ng's Agentic Design Patterns**
-   - learn.deeplearning.ai/courses/agentic-ai
-   - Key: 4 patterns — Reflection, Tool Use, Planning, Multi-Agent Collaboration; Reflection is the foundational pattern for self-improvement
+### Cumulative Reasoning with Large Language Models
+- **Authors:** Zhang et al.
+- **Year:** 2023
+- **URL:** https://arxiv.org/abs/2308.04371
 
-10. **Paul Graham — "Write Simply"** (paulgraham.com/simply.html)
-    - Key: Simple writing lets readers focus on ideas, not prose; simple writing keeps you honest ("If you say nothing simply, it will be obvious to everyone"); edit by cutting, not adding
+## Practical References
 
-11. **Paul Graham — "Writing, Briefly"** (paulgraham.com/writing44.html)
-    - Key: Writing well = thinking well; brevity is a feature
+### Learn Prompting — Self-Criticism Section
+- **URL:** https://learnprompting.org/docs/advanced/self_criticism/introduction
+- **Covers:** Self-Calibration, Self-Refine, RCoT, Self-Verification, CoVe, Cumulative Reasoning
 
-12. **Ethan Mollick — "Co-Intelligence"**
-    - Key: AI works best as a co-intelligence partner; prompt quality directly determines output quality; iteration and refinement are essential
-
-## Technical Writing
-
-13. **Google Technical Writing: Be Concise**
-    - developers.google.com/tech-writing/error-messages/be-concise
-    - Key: Eliminate unnecessary text; use active voice; be concise without sacrificing clarity; don't make things so brief they become cryptic
-
-14. **Google Developer Documentation Style Guide**
-    - developers.google.com/style
-    - Key: Clear, consistent technical documentation; editorial standards for developer audiences
-
-## Hallucination Prevention
-
-15. **Anthropic: Reduce Hallucinations**
-    - platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-hallucinations
-    - Key: Allow "I don't know"; use direct quotes for grounding; verify with citations; chain-of-thought verification; external knowledge restriction
-
-16. **Morphik: 7 Proven Methods to Eliminate AI Hallucinations**
-    - morphik.ai/blog/eliminate-hallucinations-guide
-    - Key: Properly implemented safeguards achieve 96% hallucination reduction; layered defenses > silver bullets; chain-of-thought improves accuracy by 35%
-
-17. **Reddit/PromptEngineering: 12 Tested Techniques Against Hallucinations**
-    - Key: "Explain only core, well-established aspects"; eliminated 89% of fake claims; restrict to established knowledge
-
-## Prompt Engineering Best Practices
-
-18. **Braintrust: Systematic Prompt Engineering**
-    - braintrust.dev/articles/systematic-prompt-engineering
-    - Key: Treat prompt engineering as systems engineering, not creative writing; modular prompt architecture; clear requirements definition; version control prompts
-
-19. **Lakera: Ultimate Guide to Prompt Engineering 2026**
-    - lakera.ai/blog/prompt-engineering-guide
-    - Key: Structured, detailed prompts produce accurate, actionable outputs; structured prompts reduce hallucinations
-
-20. **LearnPrompting.org: Self-Refine**
-    - learnprompting.org/docs/advanced/self_criticism/self_refine
-    - Key: 3-step approach (generate → feedback → refine); iterative until satisfactory; works across code optimization, readability, sentiment analysis
-
-21. **Aakash Gupta: Prompt Engineering in 2025**
-    - news.aakashg.com/p/prompt-engineering
-    - Key: Research-backed techniques from production AI companies; latest frameworks for product teams
-
-## GitHub Repositories
-
-22. **Awesome-Prompt-Engineering** (promptslab)
-    - github.com/promptslab/Awesome-Prompt-Engineering
-    - Key: Curated resources for prompt engineering with GPT/ChatGPT/PaLM
-
-23. **awesome-gpt-prompt-engineering** (snwfdhmp)
-    - github.com/snwfdhmp/awesome-gpt-prompt-engineering
-    - Key: Curated list of resources and tools for LLM prompt engineering
+### Self-Refine Demo Site
+- **URL:** https://selfrefine.info/
