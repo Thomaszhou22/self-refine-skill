@@ -15,6 +15,7 @@
 [![Gemini CLI](https://img.shields.io/badge/Gemini%20CLI-compatible-4285F4)](https://ai.google.dev)
 [![Windsurf](https://img.shields.io/badge/Windsurf-compatible-00D4AA)](https://codeium.com/windsurf)
 [![JetBrains](https://img.shields.io/badge/JetBrains-compatible-000)](https://www.jetbrains.com/ai/)
+[![Benchmarked](https://img.shields.io/badge/benchmarked-21%25%20improvement-green)](BENCHMARK.md)
 
 </div>
 
@@ -31,6 +32,31 @@ GENERATE → CRITIQUE → REFINE → CHECK → DELIVER
 Based on peer-reviewed research showing **~20% quality improvement** from iterative self-refinement (Madaan et al., 2023).
 
 **One file. Zero dependencies. Zero API cost.** The host AI acts as its own critic.
+
+---
+
+## Proven Results
+
+Benchmarked on **20 questions across 5 categories** with controlled before/after evaluation. → [Full report](BENCHMARK.md)
+
+| Metric | Result |
+|--------|--------|
+| **Overall improvement** | **+21.2%** |
+| Questions improved | 20/20 (100%) |
+| Best single improvement | +43.9% |
+
+**Per-dimension improvement:**
+
+| Dimension | Δ |
+|-----------|---|
+| Conciseness | +27.7% |
+| Actionability | +25.0% |
+| Response Completeness | +24.8% |
+| Logical Completeness | +23.7% |
+| Factual Accuracy | +14.8% |
+| Internal Consistency | +11.9% |
+
+📖 [Read the full benchmark report →](BENCHMARK.md)
 
 ---
 
