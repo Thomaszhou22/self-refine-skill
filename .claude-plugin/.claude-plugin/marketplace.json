@@ -1,0 +1,19 @@
+{
+  "name": "self-refine-reflection",
+  "owner": {
+    "name": "Thomas Zhou"
+  },
+  "metadata": {
+    "description": "Systematic self-reflection for AI agents. GENERATE → CRITIQUE → REFINE → CHECK. +21.2% benchmark improvement. Works with Claude Code, Cursor, Copilot, and 10+ more platforms."
+  },
+  "plugins": [
+    {
+      "name": "self-refine-reflection",
+      "source": {
+        "source": "github",
+        "repo": "Thomaszhou22/self-refine-skill"
+      },
+      "description": "Systematic self-reflection and iterative refinement based on peer-reviewed research (Madaan 2023, Shinn 2023). Zero API cost."
+    }
+  ]
+}

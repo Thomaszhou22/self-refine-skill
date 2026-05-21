@@ -1,3 +1,12 @@
+---
+name: self-refine-reflection
+description: Systematic self-reflection and iterative output refinement for AI agents. Based on Madaan et al. (2023) Self-Refine, Shinn et al. (2023) Reflexion, and Andrew Ng's Reflection pattern. Use when outputs need multi-round critique-and-improve cycles, when initial quality is insufficient, or when complex tasks benefit from self-correction.
+license: MIT
+metadata:
+  author: Thomas Zhou
+  version: "2.0.0"
+---
+
 # Self-Refine Reflection Skill
 
 > An AI agent skill for systematic self-reflection and iterative output refinement.
