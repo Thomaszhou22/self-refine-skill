@@ -19,6 +19,8 @@
 
 </div>
 
+**English** | **[中文](README.zh-CN.md)**
+
 ---
 
 ## What It Does
