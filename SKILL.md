@@ -12,6 +12,29 @@ metadata:
 > An AI agent skill for systematic self-reflection and iterative output refinement.
 > Based on Madaan et al. (2023), Shinn et al. (2023), and Andrew Ng's Reflection design pattern.
 
+
+## Onboarding（首次使用）
+
+当用户第一次触发本 skill 且 `memory/self_refine_state.json` 不存在时，执行一次性引导：
+
+1. **介绍能力**（一句话）：_"我可以让 AI 在交付前自我审查——生成→批评→精炼→检查，逐轮提升输出质量。"_
+
+2. **快速配置：**
+
+1. **默认深度级别**（默认：2）
+   - 1（轻量，~15% token 开销）
+   - 2（标准，~30% token 开销，推荐）
+   - 3（深度，~50% token 开销，高风险任务用）
+2. **是否保存反思笔记**（默认：是，跨会话改进）
+
+3. **写入初始状态文件** `memory/self_refine_state.json`（JSON 格式，含 `onboarded: true` 和时间戳）
+
+4. **确认完成**：_"设置完成！以后直接用就行。随时可以说'reset settings'重新配置。"_
+
+**Onboarding 只执行一次**，后续每次激活直接读取状态文件。用户说 "reset settings" 时删除状态文件重新引导。
+
+---
+
 ## Platform Auto-Detection
 
 At skill load time, detect your runtime environment and adjust capabilities:
